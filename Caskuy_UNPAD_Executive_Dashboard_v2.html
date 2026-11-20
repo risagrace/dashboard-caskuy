@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caskuy UNPAD — Dashboard Studi Kelayakan Finansial (2027–2032)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --caskuy-navy: #1E3A8A;
+      --caskuy-blue: #2563EB;
+      --caskuy-red: #DC2626;
+      --caskuy-gold: #F59E0B;
+      --bg-page: #F8F9FC;
+      --border-card: #E3E6F0;
+    }
+
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: #3A3B45;
+      font-size: 0.925rem;
+    }
+
+    /* Classic Bootstrap Admin Card Style (SB Admin 2 / RuangAdmin) */
+    .admin-card {
+      background-color: #FFFFFF;
+      border: 1px solid #E3E6F0;
+      border-radius: 0.35rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.08);
+    }
+
+    .admin-card-header {
+      background-color: #F8F9FC;
+      border-bottom: 1px solid #E3E6F0;
+      padding: 0.85rem 1.25rem;
+      border-top-left-radius: 0.35rem;
+      border-top-right-radius: 0.35rem;
+    }
+
+    /* Left Border Accent KPI Cards */
+    .border-left-navy { border-left: 0.25rem solid #1E3A8A !important; }
+    .border-left-blue { border-left: 0.25rem solid #2563EB !important; }
+    .border-left-red { border-left: 0.25rem solid #DC2626 !important; }
+    .border-left-gold { border-left: 0.25rem solid #F59E0B !important; }
+    .border-left-emerald { border-left: 0.25rem solid #1CC88A !important; }
+    .border-left-slate { border-left: 0.25rem solid #5A5C69 !important; }
+
+    /* Top Navbar with Crimson Accent Line */
+    .topbar-caskuy {
+      background-color: #1E3A8A;
+      border-bottom: 3px solid #DC2626;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.12);
+    }
+
+    /* Fixed Left White Sidebar */
+    .sidebar-caskuy {
+      background-color: #FFFFFF;
+      border-right: 1px solid #E3E6F0;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.06);
+    }
+
+    .sidebar-divider {
+      border-top: 1px solid #EAECF4;
+      margin: 0.75rem 1rem;
+    }
+
+    .sidebar-heading {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #858796;
+      padding: 0 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 0.35rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #5A5C69;
+      transition: all 0.15s ease;
+    }
+
+    .nav-link-item:hover {
+      background-color: #F8F9FC;
+      color: #1E3A8A;
+    }
+
+    .nav-link-active {
+      background-color: #EFF6FF;
+      color: #1E3A8A;
+      border-left: 3px solid #DC2626;
+    }
+
+    /* Sidebar Scenario & Year Controls */
+    .scen-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid #E3E6F0;
+      background-color: #FFFFFF;
+      color: #5A5C69;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+    }
+
+    .scen-btn:hover {
+      background-color: #F8F9FC;
+      border-color: #CBD5E1;
+    }
+
+    .scen-btn-active-base {
+      background-color: #1E3A8A;
+      color: #FFFFFF;
+      border-color: #1E3A8A;
+    }
+
+    .scen-btn-active-optimis {
+      background-color: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+
+    .scen-btn-active-pesimis {
+      background-color: #DC2626;
+      color: #FFFFFF;
+      border-color: #DC2626;
+    }
+
+    .yr-btn {
+      padding: 0.32rem 0.5rem;
+      border-radius: 0.3rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border: 1px solid #E3E6F0;
+      background-color: #FFFFFF;
+      color: #5A5C69;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .yr-btn:hover {
+      background-color: #F8F9FC;
+      color: #1E3A8A;
+    }
+
+    .yr-btn-active {
+      background-color: #DC2626;
+      color: #FFFFFF;
+      border-color: #DC2626;
+    }
+
+    /* Progress bar track (RuangAdmin Products Sold style) */
+    .progress-track {
+      height: 0.55rem;
+      background-color: #EAECF4;
+      border-radius: 0.25rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 0.25rem;
+      transition: width 0.35s ease;
+    }
+
+    /* Custom clean scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F8F9FC; }
+    ::-webkit-scrollbar-thumb { background: #D1D3E2; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #B7B9CC; }
+  </style>
+</head>
+<body class="antialiased">
+
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- ===================================================================== -->
+  <!-- FIXED LEFT SIDEBAR (Classic White Bootstrap Admin + Caskuy Mascot)    -->
+  <!-- ===================================================================== -->
+  <aside class="w-full lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 sidebar-caskuy flex flex-col justify-between z-30 overflow-y-auto">
+    <div>
+      <!-- Brand Header with Inline SVG CASKUY! Circular Emblem -->
+      <div class="h-16 px-4 flex items-center gap-3 border-b border-[#E3E6F0] bg-white">
+        <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" aria-label="Logo Caskuy">
+          <circle cx="50" cy="50" r="47" fill="#1E3A8A" stroke="#DC2626" stroke-width="4"/>
+          <circle cx="50" cy="50" r="39" fill="#FFFFFF"/>
+          <!-- Lightning bolt behind text -->
+          <polygon points="56,14 36,52 50,52 43,86 67,46 52,46" fill="#F59E0B" opacity="0.9"/>
+          <!-- Bold CASKUY! Emblem Typography -->
+          <rect x="13" y="39" width="74" height="22" rx="5" fill="#DC2626"/>
+          <text x="50" y="54" text-anchor="middle" fill="#FFFFFF" font-family="Nunito, sans-serif" font-weight="900" font-size="14.5" letter-spacing="0.6">CASKUY!</text>
+          <text x="50" y="73" text-anchor="middle" fill="#1E3A8A" font-family="Nunito, sans-serif" font-weight="800" font-size="8" letter-spacing="0.8">UNPAD</text>
+        </svg>
+        <div>
+          <div class="font-black text-base tracking-tight leading-none text-[#1E3A8A]">
+            CASKUY<span class="text-[#DC2626]">!</span>
+          </div>
+          <div class="text-[11px] font-bold text-[#858796] mt-0.5">Feasibility Admin</div>
+        </div>
+      </div>
+
+      <!-- GROUP 1: NAVIGASI -->
+      <div class="pt-4">
+        <div class="sidebar-heading">Navigasi</div>
+        <nav class="space-y-1">
+          <a href="#section-kpi" class="nav-link-item nav-link-active">
+            <svg class="w-4 h-4 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Ringkasan Kelayakan</span>
+          </a>
+          <a href="#section-charts" class="nav-link-item">
+            <svg class="w-4 h-4 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            <span>Proyeksi Arus Kas</span>
+          </a>
+          <a href="#section-cost-sensitivity" class="nav-link-item">
+            <svg class="w-4 h-4 text-[#DC2626]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>CAPEX, OPEX & Tornado</span>
+          </a>
+          <a href="#section-tables" class="nav-link-item">
+            <svg class="w-4 h-4 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span>Tabel & Parameter Uji</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- GROUP 2: SKENARIO MODEL -->
+      <div>
+        <div class="sidebar-heading">Skenario Model</div>
+        <div class="px-4 space-y-1.5" role="group" aria-label="Pilih Skenario Model">
+          <button type="button" onclick="setScenario('base')" id="btn-scen-base" class="scen-btn scen-btn-active-base">
+            <span>Base Case (Acuan)</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/20 font-extrabold">35,4 trx/hr</span>
+          </button>
+          <button type="button" onclick="setScenario('optimis')" id="btn-scen-optimis" class="scen-btn">
+            <span>Skenario Optimis</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] font-extrabold">98,2 trx/hr</span>
+          </button>
+          <button type="button" onclick="setScenario('pesimis')" id="btn-scen-pesimis" class="scen-btn">
+            <span>Skenario Pesimis</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#FEF2F2] text-[#DC2626] font-extrabold">6,9 trx/hr</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- GROUP 3: FILTER PERIODE -->
+      <div>
+        <div class="sidebar-heading">Filter Periode</div>
+        <div class="px-4 space-y-1.5">
+          <button type="button" onclick="setYearFilter('all')" id="btn-yr-all" class="yr-btn yr-btn-active w-full">
+            Semua Periode (2027–2032)
+          </button>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="setYearFilter(2027)" id="btn-yr-2027" class="yr-btn">2027 (t0)</button>
+            <button type="button" onclick="setYearFilter(2028)" id="btn-yr-2028" class="yr-btn">2028 (t1)</button>
+            <button type="button" onclick="setYearFilter(2029)" id="btn-yr-2029" class="yr-btn">2029 (t2)</button>
+            <button type="button" onclick="setYearFilter(2030)" id="btn-yr-2030" class="yr-btn">2030 (t3)</button>
+            <button type="button" onclick="setYearFilter(2031)" id="btn-yr-2031" class="yr-btn">2031 (t4)</button>
+            <button type="button" onclick="setYearFilter(2032)" id="btn-yr-2032" class="yr-btn">2032 (t5)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM SIDEBAR: CASKUY MASCOT CARD & DYNAMIC INSIGHT SPEECH BUBBLE  -->
+    <!-- =================================================================== -->
+    <div class="p-3.5 mt-4">
+      <div class="bg-[#F8F9FC] border border-[#E3E6F0] rounded-md p-3 relative">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#1E3A8A]">Asisten Caskuy</span>
+          <span id="mascot-mood-pill" class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#DCFCE7] text-[#15803D]">LAYAK</span>
+        </div>
+
+        <!-- Dynamic Insight Speech Bubble -->
+        <div class="bg-white border border-[#E3E6F0] rounded-md p-2.5 text-[11.5px] leading-snug text-[#3A3B45] shadow-sm relative mb-2">
+          <p id="mascot-speech">
+            Pada <strong>Base Case</strong>, proyek menghasilkan NPV <strong>Rp516,40 Jt</strong> dengan balik modal dalam <strong>1,17 tahun</strong> (±14 bulan).
+          </p>
+          <!-- Speech bubble pointer -->
+          <div class="w-2.5 h-2.5 bg-white border-r border-b border-[#E3E6F0] transform rotate-45 absolute -bottom-1.5 left-8"></div>
+        </div>
+
+        <!-- Mascot + Quick Model Specs Row -->
+        <div class="flex items-center gap-2.5 pt-1">
+          <!-- Inline SVG: Yellow Chick Mascot in Blue-Red Vest with 'C' Emblem holding Lightning Power Bank -->
+          <svg width="64" height="68" viewBox="0 0 120 128" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" aria-label="Maskot Anak Ayam Caskuy">
+            <!-- Feet -->
+            <path d="M44 114 L38 122 M44 114 L44 123 M44 114 L50 122" stroke="#F59E0B" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M72 114 L66 122 M72 114 L72 123 M72 114 L78 122" stroke="#F59E0B" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Chick Yellow Body -->
+            <ellipse cx="58" cy="84" rx="28" ry="31" fill="#FACC15" stroke="#D97706" stroke-width="2"/>
+            <!-- Blue & Red Vest -->
+            <path d="M33 66 Q58 74 83 66 L85 104 Q58 112 31 104 Z" fill="#1E3A8A"/>
+            <!-- Red Vest Trim & Collar -->
+            <path d="M33 66 L46 78 L46 107 L31 104 Z" fill="#DC2626"/>
+            <path d="M83 66 L70 78 L70 107 L85 104 Z" fill="#DC2626"/>
+            <!-- 'C' Emblem on Vest -->
+            <circle cx="58" cy="89" r="9.5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="2"/>
+            <text x="58" y="93" text-anchor="middle" fill="#DC2626" font-family="Nunito, sans-serif" font-weight="900" font-size="12">C</text>
+            <!-- Chick Head -->
+            <circle cx="58" cy="42" r="24" fill="#FACC15" stroke="#D97706" stroke-width="2"/>
+            <!-- Hair Tuft -->
+            <path d="M54 18 Q50 8 58 13 Q63 6 65 18" fill="#FACC15" stroke="#D97706" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Eyes -->
+            <circle cx="49" cy="39" r="3.5" fill="#1E293B"/>
+            <circle cx="50" cy="38" r="1.2" fill="#FFFFFF"/>
+            <circle cx="67" cy="39" r="3.5" fill="#1E293B"/>
+            <circle cx="68" cy="38" r="1.2" fill="#FFFFFF"/>
+            <!-- Rosy Cheeks -->
+            <ellipse cx="42" cy="45" rx="3.5" ry="2" fill="#FB7185" opacity="0.65"/>
+            <ellipse cx="74" cy="45" rx="3.5" ry="2" fill="#FB7185" opacity="0.65"/>
+            <!-- Orange Beak -->
+            <polygon points="53,45 63,45 58,52" fill="#F97316" stroke="#C2410C" stroke-width="1.2" stroke-linejoin="round"/>
+            <!-- Left Wing -->
+            <path d="M30 74 Q18 82 26 94 Q33 92 34 83" fill="#FACC15" stroke="#D97706" stroke-width="2"/>
+            <!-- Right Wing holding Power Bank -->
+            <path d="M85 73 Q98 76 96 89 Q88 92 83 84" fill="#FACC15" stroke="#D97706" stroke-width="2"/>
+            <!-- Power Bank Device with Lightning Icon -->
+            <rect x="88" y="62" width="22" height="34" rx="4" fill="#1E3A8A" stroke="#0F172A" stroke-width="1.8"/>
+            <rect x="91" y="65" width="16" height="28" rx="2" fill="#2563EB"/>
+            <polygon points="100,69 94,80 99,80 97,89 104,78 99,78" fill="#FACC15"/>
+          </svg>
+
+          <div class="text-[10.5px] text-[#5A5C69] leading-tight space-y-0.5">
+            <div class="font-extrabold text-[#1E3A8A]">Tim FEB UNPAD</div>
+            <div>3 Kiosk · 33 Power Bank</div>
+            <div>Diskonto (r): <strong>12,0%</strong></div>
+            <div>Tarif: <strong>Rp5rb/jam</strong> (Cap 20rb)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN CONTENT WRAPPER (Offset by fixed 256px sidebar on desktop)       -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-w-0">
+
+    <!-- Top Royal Blue Navbar with Red Bottom Accent -->
+    <header class="topbar-caskuy text-white h-16 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+        <span class="font-extrabold text-base tracking-tight">Dashboard Kelayakan Finansial</span>
+        <nav aria-label="Breadcrumb" class="text-xs text-blue-200 flex items-center gap-1.5">
+          <span>Home</span>
+          <span>/</span>
+          <span class="text-white font-bold">Dashboard Kelayakan</span>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <span class="hidden md:inline-block text-xs font-bold bg-white/10 border border-white/20 px-3 py-1 rounded">
+          Lokasi: Rektorat · Kandaga · Kantin FEB
+        </span>
+        <span id="navbar-scen-badge" class="text-xs font-extrabold bg-[#DC2626] text-white px-3 py-1 rounded shadow-sm">
+          Base Case
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Page Container -->
+    <main class="p-4 sm:p-6 space-y-5 max-w-[1560px] w-full mx-auto">
+
+      <!-- Page Title & Feasibility Verdict Strip -->
+      <div class="admin-card p-4 sm:px-5 sm:py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold text-[#1E3A8A]">
+              Studi Kelayakan Investasi Caskuy UNPAD (2027–2032)
+            </h1>
+            <span id="year-filter-pill" class="hidden text-xs font-bold px-2.5 py-0.5 rounded bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]">
+              Filter: 2028
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[#858796] mt-0.5">
+            Evaluasi proyek penyewaan power bank berbasis kiosk otomatis (pengadaan t=0 tahun 2027, operasi 5 tahun 2028–2032, WACC/r = 12%).
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <div id="verdict-box" class="px-4 py-2 rounded border border-[#1CC88A] bg-[#F0FDF4] text-right">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#15803D]">Status Kelayakan</div>
+            <div id="verdict-text" class="text-sm font-black text-[#15803D]">LAYAK FINANSIAL</div>
+          </div>
+          <button id="btn-reset-year" onclick="setYearFilter('all')" class="hidden text-xs font-bold text-[#2563EB] hover:underline">
+            Reset Tahun
+          </button>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- ROW 1: 6 CLASSIC BOOTSTRAP LEFT-BORDER KPI CARDS                    -->
+      <!-- =================================================================== -->
+      <section id="section-kpi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <!-- KPI 1: NPV -->
+        <div class="admin-card border-left-navy p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#1E3A8A]">Net Present Value</span>
+            <span class="text-xs font-extrabold text-[#858796]">NPV</span>
+          </div>
+          <div id="kpi-npv" class="text-xl font-black text-[#3A3B45] my-1.5">Rp516,40 Jt</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span id="kpi-npv-exact" class="text-[#858796] font-semibold">Rp516.396.245</span>
+            <span id="kpi-npv-badge" class="font-extrabold text-[#15803D]">&gt; Rp0</span>
+          </div>
+        </div>
+
+        <!-- KPI 2: IRR -->
+        <div class="admin-card border-left-blue p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#2563EB]">Internal Rate of Return</span>
+            <span class="text-xs font-extrabold text-[#858796]">IRR</span>
+          </div>
+          <div id="kpi-irr" class="text-xl font-black text-[#3A3B45] my-1.5">89,16%</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span class="text-[#858796] font-semibold">Hurdle: 12,0%</span>
+            <span id="kpi-irr-badge" class="font-extrabold text-[#15803D]">+77,2%</span>
+          </div>
+        </div>
+
+        <!-- KPI 3: BCR -->
+        <div class="admin-card border-left-emerald p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#15803D]">Benefit-Cost Ratio</span>
+            <span class="text-xs font-extrabold text-[#858796]">BCR</span>
+          </div>
+          <div id="kpi-bcr" class="text-xl font-black text-[#3A3B45] my-1.5">2,01x</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span class="text-[#858796] font-semibold">Syarat: &gt; 1,00x</span>
+            <span id="kpi-bcr-badge" class="font-extrabold text-[#15803D]">Efisien</span>
+          </div>
+        </div>
+
+        <!-- KPI 4: Payback Period -->
+        <div class="admin-card border-left-gold p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#B45309]">Payback Period</span>
+            <span class="text-xs font-extrabold text-[#858796]">PBP</span>
+          </div>
+          <div id="kpi-payback" class="text-xl font-black text-[#3A3B45] my-1.5">1,17 Tahun</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span class="text-[#858796] font-semibold">Batas: ≤ 5,00 th</span>
+            <span id="kpi-payback-badge" class="font-extrabold text-[#15803D]">±14 Bulan</span>
+          </div>
+        </div>
+
+        <!-- KPI 5: CAPEX -->
+        <div class="admin-card border-left-red p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#DC2626]">Investasi Awal (t=0)</span>
+            <span class="text-xs font-extrabold text-[#858796]">CAPEX</span>
+          </div>
+          <div id="kpi-capex" class="text-xl font-black text-[#3A3B45] my-1.5">Rp194,01 Jt</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span class="text-[#858796] font-semibold">Rp194.008.843</span>
+            <span class="font-bold text-[#DC2626]">+10% Kont.</span>
+          </div>
+        </div>
+
+        <!-- KPI 6: Transaksi (Dynamic per Year Filter) -->
+        <div class="admin-card border-left-slate p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span id="kpi-trx-label" class="text-[11px] font-extrabold uppercase tracking-wider text-[#5A5C69]">Transaksi Tahun 1</span>
+            <span class="text-xs font-extrabold text-[#858796]">VOL</span>
+          </div>
+          <div id="kpi-trx" class="text-xl font-black text-[#3A3B45] my-1.5">12.904 trx</div>
+          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#EAECF4]">
+            <span id="kpi-trx-daily" class="text-[#858796] font-semibold">35,4 trx/hari</span>
+            <span id="kpi-trx-util" class="font-extrabold text-[#1E3A8A]">Util. 36,0%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- ROW 2: CASH FLOW COMBO CHART & SCENARIO COMPARISON                  -->
+      <!-- =================================================================== -->
+      <section id="section-charts" class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+        <!-- Combo Chart (8 cols) -->
+        <div class="xl:col-span-8 admin-card flex flex-col">
+          <div class="admin-card-header flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <h2 class="text-sm font-extrabold text-[#1E3A8A]">
+              Proyeksi Pendapatan, OPEX, FCF & FCF Kumulatif (2027–2032)
+            </h2>
+            <span id="chart-cf-tag" class="text-xs font-bold text-[#DC2626]">Skenario: Base</span>
+          </div>
+          <div class="p-4 flex-1">
+            <div class="relative h-[320px] w-full">
+              <canvas id="cashFlowComboChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scenario Comparison Chart (4 cols) -->
+        <div class="xl:col-span-4 admin-card flex flex-col">
+          <div class="admin-card-header">
+            <h2 class="text-sm font-extrabold text-[#1E3A8A]">
+              Perbandingan Antar Skenario (Rp Juta)
+            </h2>
+          </div>
+          <div class="p-4 flex-1">
+            <div class="relative h-[320px] w-full">
+              <canvas id="scenarioCompareChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- ROW 3: CAPEX & OPEX PROGRESS BAR BREAKDOWN + TORNADO SENSITIVITY    -->
+      <!-- =================================================================== -->
+      <section id="section-cost-sensitivity" class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+
+        <!-- CARD A: CAPEX Progress Bar Breakdown (RuangAdmin 'Products Sold' Style) -->
+        <div class="xl:col-span-4 admin-card flex flex-col justify-between">
+          <div>
+            <div class="admin-card-header flex items-center justify-between">
+              <h2 class="text-sm font-extrabold text-[#1E3A8A]">Rincian CAPEX Awal (t=0)</h2>
+              <span class="text-xs font-extrabold text-[#DC2626]">Rp194,01 Jt</span>
+            </div>
+            <div id="capex-progress-list" class="p-4 space-y-3.5">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+          <div class="px-4 py-2.5 bg-[#F8F9FC] border-t border-[#E3E6F0] text-[11px] text-[#858796] flex justify-between">
+            <span>Nilai Sisa (Salvage t=5):</span>
+            <span class="font-extrabold text-[#3A3B45]">10% (Rp19.400.884)</span>
+          </div>
+        </div>
+
+        <!-- CARD B: OPEX Progress Bar Breakdown (Dynamic by Scenario & Year) -->
+        <div class="xl:col-span-4 admin-card flex flex-col justify-between">
+          <div>
+            <div class="admin-card-header flex items-center justify-between">
+              <h2 id="opex-card-title" class="text-sm font-extrabold text-[#1E3A8A]">Struktur OPEX (5 Tahun)</h2>
+              <span id="opex-card-total" class="text-xs font-extrabold text-[#2563EB]">Rp438,05 Jt</span>
+            </div>
+            <div id="opex-progress-list" class="p-4 space-y-4">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+          <div class="px-4 py-2.5 bg-[#F8F9FC] border-t border-[#E3E6F0] text-[11px] text-[#858796] flex justify-between">
+            <span>Rata-rata OPEX / Tahun:</span>
+            <span id="opex-card-avg" class="font-extrabold text-[#3A3B45]">Rp87,61 Jt/th</span>
+          </div>
+        </div>
+
+        <!-- CARD C: Tornado Sensitivity Chart (4 cols) -->
+        <div class="xl:col-span-4 admin-card flex flex-col">
+          <div class="admin-card-header flex items-center justify-between">
+            <h2 class="text-sm font-extrabold text-[#1E3A8A]">Sensitivitas NPV (Tornado)</h2>
+            <span class="text-[11px] font-bold text-[#858796]">Δ NPV (Rp Jt)</span>
+          </div>
+          <div class="p-4 flex-1">
+            <div class="relative h-[330px] w-full">
+              <canvas id="tornadoChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- ROW 4: ANNUAL CASH FLOW TABLE & FEASIBILITY CRITERIA TABLE          -->
+      <!-- =================================================================== -->
+      <section id="section-tables" class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+        <!-- Annual Cash Flow Table (8 cols) -->
+        <div class="xl:col-span-8 admin-card overflow-hidden flex flex-col">
+          <div class="admin-card-header flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <h2 class="text-sm font-extrabold text-[#1E3A8A]">
+              Tabel Rincian Arus Kas Tahunan (2027–2032)
+            </h2>
+            <span id="table-cf-scenario" class="text-xs font-bold text-[#858796]">Satuan: Rupiah Penuh (Rp) · Base</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right border-collapse">
+              <thead>
+                <tr class="bg-[#F8F9FC] text-[#5A5C69] border-b border-[#E3E6F0] font-extrabold uppercase">
+                  <th class="py-2.5 px-4 text-left">Komponen Arus Kas</th>
+                  <th id="th-2027" class="py-2.5 px-3">2027 (t=0)</th>
+                  <th id="th-2028" class="py-2.5 px-3">2028 (t=1)</th>
+                  <th id="th-2029" class="py-2.5 px-3">2029 (t=2)</th>
+                  <th id="th-2030" class="py-2.5 px-3">2030 (t=3)</th>
+                  <th id="th-2031" class="py-2.5 px-3">2031 (t=4)</th>
+                  <th id="th-2032" class="py-2.5 px-3">2032 (t=5)</th>
+                  <th class="py-2.5 px-4 bg-[#EAECF4]/60 text-[#1E3A8A]">Total 5 Th</th>
+                </tr>
+              </thead>
+              <tbody id="cashflow-tbody" class="divide-y divide-[#E3E6F0] text-[#3A3B45]">
+                <!-- Populated dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Feasibility Criteria & Switching Values (4 cols) -->
+        <div class="xl:col-span-4 admin-card overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="admin-card-header">
+              <h2 class="text-sm font-extrabold text-[#1E3A8A]">Kriteria Evaluasi Kelayakan</h2>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#F8F9FC] text-[#5A5C69] border-b border-[#E3E6F0] font-extrabold uppercase">
+                    <th class="py-2.5 px-3.5">Kriteria</th>
+                    <th class="py-2.5 px-3 text-right">Hasil</th>
+                    <th class="py-2.5 px-3">Syarat</th>
+                    <th class="py-2.5 px-3.5 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="criteria-tbody" class="divide-y divide-[#E3E6F0]">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Switching Value Safety Margin -->
+          <div class="p-3.5 bg-[#F8F9FC] border-t border-[#E3E6F0]">
+            <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#1E3A8A] mb-2">
+              Batas Aman Switching Value (NPV = 0)
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="bg-white p-2 rounded border border-[#E3E6F0]">
+                <div class="text-[#858796]">Min. Trx / Hari</div>
+                <div class="font-extrabold text-[#3A3B45]">16,2 trx <span class="text-[#15803D]">(-54,2%)</span></div>
+              </div>
+              <div class="bg-white p-2 rounded border border-[#E3E6F0]">
+                <div class="text-[#858796]">Min. Tarif Sewa</div>
+                <div class="font-extrabold text-[#3A3B45]">Rp2.376/jam <span class="text-[#15803D]">(-52,5%)</span></div>
+              </div>
+              <div class="bg-white p-2 rounded border border-[#E3E6F0]">
+                <div class="text-[#858796]">Maks. Kenaikan OPEX</div>
+                <div class="font-extrabold text-[#3A3B45]">+181,5% <span class="text-[#858796] font-semibold">(2,82x)</span></div>
+              </div>
+              <div class="bg-white p-2 rounded border border-[#E3E6F0]">
+                <div class="text-[#858796]">Maks. Kenaikan CAPEX</div>
+                <div class="font-extrabold text-[#3A3B45]">+282,2% <span class="text-[#858796] font-semibold">(3,82x)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="text-center text-xs text-[#858796] py-3 border-t border-[#E3E6F0]">
+        Copyright &copy; 2026 <strong>Caskuy! UNPAD</strong> — Tim Studi Kelayakan Bisnis FEB UNPAD (Naura Kadzna Radya, Nadhira Muthmainnah H., Gracia Clarissa Tanjaya)
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// VERIFIED DATASET FROM "Financial Feasibility Caskuy (1).xlsx" (2027 - 2032)
+// 100% EXACT VALUES & FORMULAS PRESERVED
+// ============================================================================
+const MODEL_DATA = {
+  scenarios: {
+    pesimis: {
+      name: "Pesimis",
+      tarif: 5000,
+      durasi: 3,
+      trx_demand_y1: 2525.12,
+      trx_real_y1: 2525.12,
+      trx_daily_y1: 6.92,
+      cap_trx: 47778.5,
+      capex: 194008842.5,
+      years: [2027, 2028, 2029, 2030, 2031, 2032],
+      trx: [0, 2525.12, 2651.38, 2783.95, 2923.15, 3069.30],
+      rev: [0, 37876869.19, 39770712.65, 41759248.28, 43847210.69, 46039571.23],
+      opex: [0, 72065151.40, 71949332.81, 73237663.16, 74998540.35, 77041204.21],
+      ebit: [0, -34188282.21, -32178620.16, -31478414.88, -31151329.66, -31001632.98],
+      salvage: [0, 0, 0, 0, 0, 19400884.25],
+      fcf: [-194008842.5, -34188282.21, -32178620.16, -31478414.88, -31151329.66, -11600748.73],
+      kum_fcf: [-194008842.5, -228197124.7, -260375744.9, -291854159.7, -323005489.4, -334606238.1],
+      npv: -298972216.9,
+      irr: null,
+      bcr: 0.3490,
+      payback: null,
+      layak: false,
+      pv_manfaat: 160245376.90,
+      pv_biaya: 459217593.83,
+      opex_breakdown_y: [
+        { fixed_ops: 66456162.08, var_ops: 2348422.16, promo_cost: 3156405.77, mdr_cost: 104161.39 },
+        { fixed_ops: 68449846.94, var_ops: 1794117.70, promo_cost: 1590828.51, mdr_cost: 114539.65 },
+        { fixed_ops: 70503342.35, var_ops: 1498803.84, promo_cost: 1113579.95, mdr_cost: 121937.00 },
+        { fixed_ops: 72618442.62, var_ops: 1374242.72, promo_cost: 876944.21, mdr_cost: 128910.80 },
+        { fixed_ops: 74796995.90, var_ops: 1341065.39, promo_cost: 767326.19, mdr_cost: 135816.74 }
+      ]
+    },
+    base: {
+      name: "Base",
+      tarif: 5000,
+      durasi: 4,
+      trx_demand_y1: 12904.29,
+      trx_real_y1: 12904.29,
+      trx_daily_y1: 35.35,
+      cap_trx: 35833.88,
+      capex: 194008842.5,
+      years: [2027, 2028, 2029, 2030, 2031, 2032],
+      trx: [0, 12904.29, 13549.50, 14226.98, 14938.32, 15685.24],
+      rev: [0, 258085717.5, 270990003.4, 284539503.5, 298766478.7, 313704802.7],
+      opex: [0, 95313658.93, 86536708.24, 84690099.87, 85005664.36, 86500978.04],
+      ebit: [0, 162772058.57, 184453295.16, 199849403.63, 213760814.34, 227203824.66],
+      salvage: [0, 0, 0, 0, 0, 19400884.25],
+      fcf: [-194008842.5, 162772058.6, 184453295.1, 199849403.7, 213760814.4, 246604708.9],
+      kum_fcf: [-194008842.5, -31236783.93, 153216511.2, 353065914.9, 566826729.2, 813431438.1],
+      npv: 516396244.8,
+      irr: 0.891582,
+      bcr: 2.0096,
+      payback: 1.1693,
+      layak: true,
+      pv_manfaat: 1027879457.24,
+      pv_biaya: 511483212.41,
+      opex_breakdown_y: [
+        { fixed_ops: 66456162.08, var_ops: 12001273.42, promo_cost: 16130357.35, mdr_cost: 725866.08 },
+        { fixed_ops: 68449846.94, var_ops: 9168580.28, promo_cost: 8129700.10, mdr_cost: 788580.91 },
+        { fixed_ops: 70503342.35, var_ops: 7659421.31, promo_cost: 5690790.07, mdr_cost: 836546.14 },
+        { fixed_ops: 72618442.62, var_ops: 7022869.61, promo_cost: 4481497.18, mdr_cost: 882854.94 },
+        { fixed_ops: 74796995.90, var_ops: 6853321.62, promo_cost: 3921310.03, mdr_cost: 929350.48 }
+      ]
+    },
+    optimis: {
+      name: "Optimis",
+      tarif: 5000,
+      durasi: 4,
+      trx_demand_y1: 37270.67,
+      trx_real_y1: 35833.88,
+      trx_daily_y1: 98.17,
+      cap_trx: 35833.88,
+      capex: 194008842.5,
+      years: [2027, 2028, 2029, 2030, 2031, 2032],
+      trx: [0, 35833.88, 35833.88, 35833.88, 35833.88, 35833.88],
+      rev: [0, 716677500, 716677500, 716677500, 716677500, 716677500],
+      opex: [0, 146590463.6, 116283517.5, 106235920.0, 102332763.8, 101535447.4],
+      ebit: [0, 570087036.4, 600393982.5, 610441580.0, 614344736.2, 615142052.6],
+      salvage: [0, 0, 0, 0, 0, 19400884.25],
+      fcf: [-194008842.5, 570087036.4, 600393982.5, 610441580.0, 614344736.2, 634542936.8],
+      kum_fcf: [-194008842.5, 376078193.9, 976472176.5, 1586913756, 2201258493, 2835801429],
+      npv: 1978611996,
+      irr: 2.97845,
+      bcr: 4.2128,
+      payback: 0.3403,
+      layak: true,
+      pv_manfaat: 2594470579.50,
+      pv_biaya: 615858583.75,
+      opex_breakdown_y: [
+        { fixed_ops: 66456162.08, var_ops: 33326302.26, promo_cost: 44792343.75, mdr_cost: 2015655.47 },
+        { fixed_ops: 68449846.94, var_ops: 24247813.99, promo_cost: 21500325.00, mdr_cost: 2085531.53 },
+        { fixed_ops: 70503342.35, var_ops: 19291995.83, promo_cost: 14333550.00, mdr_cost: 2107031.85 },
+        { fixed_ops: 72618442.62, var_ops: 16846376.66, promo_cost: 10750162.50, mdr_cost: 2117782.01 },
+        { fixed_ops: 74796995.90, var_ops: 15656825.67, promo_cost: 8958468.75, mdr_cost: 2123157.09 }
+      ]
+    }
+  },
+  capexGroups: [
+    { label: "Docking Station (3 Kiosk)", value: 75000000, color: "#1E3A8A" },
+    { label: "Pengembangan App Custom", value: 67500000, color: "#2563EB" },
+    { label: "Kontingensi Fisik (10%)", value: 17637167.5, color: "#DC2626" },
+    { label: "Audit Keamanan, Legal & Store", value: 10946675, color: "#F59E0B" },
+    { label: "Instalasi Listrik & Sub-meter", value: 7625000, color: "#3B82F6" },
+    { label: "Branding, MoU & Soft Launch", value: 7000000, color: "#10B981" },
+    { label: "CCTV & Keamanan Fisik", value: 5000000, color: "#64748B" },
+    { label: "Unit Power Bank (33 unit)", value: 3300000, color: "#EF4444" }
+  ],
+  tornado: [
+    { variable: "Volume Transaksi (±20%)", delta_low: -190.42, delta_high: 190.42, npv_low: 325.98, npv_high: 706.81 },
+    { variable: "Durasi Sewa (3 vs 5 jam)", delta_low: -253.46, delta_high: 0.00, npv_low: 262.94, npv_high: 516.40 },
+    { variable: "Tarif Sewa (Rp4rb vs Rp6rb)", delta_low: -196.78, delta_high: -5.98, npv_low: 319.62, npv_high: 510.41 },
+    { variable: "Pertumbuhan Vol (0% vs 10%)", delta_low: -82.65, delta_high: 90.67, npv_low: 433.74, npv_high: 607.06 },
+    { variable: "Biaya OPEX (±20%)", delta_low: -56.90, delta_high: 56.90, npv_low: 459.49, npv_high: 573.30 },
+    { variable: "Tingkat Diskonto (9% vs 15%)", delta_low: -53.16, delta_high: 60.21, npv_low: 463.23, npv_high: 576.60 },
+    { variable: "Investasi CAPEX (±20%)", delta_low: -36.60, delta_high: 36.60, npv_low: 479.80, npv_high: 553.00 }
+  ]
+};
+
+// ============================================================================
+// STATE & FORMATTERS
+// ============================================================================
+let currentScenario = 'base';
+let currentYearFilter = 'all';
+let charts = {};
+
+Chart.defaults.font.family = "'Nunito', sans-serif";
+Chart.defaults.color = "#5A5C69";
+
+function formatIDR(num, compact = false) {
+  if (num === null || num === undefined || isNaN(num)) return "n/a";
+  const sign = num < 0 ? "-" : "";
+  const abs = Math.abs(num);
+  if (compact) {
+    if (abs >= 1e9) return `${sign}Rp${(abs / 1e9).toFixed(2).replace('.', ',')} M`;
+    if (abs >= 1e6) return `${sign}Rp${(abs / 1e6).toFixed(2).replace('.', ',')} Jt`;
+    if (abs >= 1e3) return `${sign}Rp${(abs / 1e3).toFixed(0)} rb`;
+  }
+  return `${sign}Rp${Math.round(abs).toLocaleString('id-ID')}`;
+}
+
+function formatNum(num, dec = 0) {
+  if (num === null || num === undefined || isNaN(num)) return "n/a";
+  return num.toLocaleString('id-ID', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+
+// ============================================================================
+// SIDEBAR INTERACTIVITY HANDLERS
+// ============================================================================
+function setScenario(scen) {
+  currentScenario = scen;
+  const activeMap = {
+    base: 'scen-btn scen-btn-active-base',
+    optimis: 'scen-btn scen-btn-active-optimis',
+    pesimis: 'scen-btn scen-btn-active-pesimis'
+  };
+  ['base', 'optimis', 'pesimis'].forEach(s => {
+    const btn = document.getElementById(`btn-scen-${s}`);
+    btn.className = (s === scen) ? activeMap[s] : 'scen-btn';
+  });
+  updateDashboard();
+}
+
+function setYearFilter(yr) {
+  currentYearFilter = yr;
+  const years = ['all', 2027, 2028, 2029, 2030, 2031, 2032];
+  years.forEach(y => {
+    const btn = document.getElementById(`btn-yr-${y}`);
+    if (y === 'all') {
+      btn.className = (y === yr) ? 'yr-btn yr-btn-active w-full' : 'yr-btn w-full';
+    } else {
+      btn.className = (y === yr) ? 'yr-btn yr-btn-active' : 'yr-btn';
+    }
+  });
+
+  const pill = document.getElementById('year-filter-pill');
+  const resetBtn = document.getElementById('btn-reset-year');
+  if (yr === 'all') {
+    pill.classList.add('hidden');
+    resetBtn.classList.add('hidden');
+  } else {
+    pill.classList.remove('hidden');
+    resetBtn.classList.remove('hidden');
+    pill.textContent = `Filter Periode: ${yr} (t=${yr - 2027})`;
+  }
+  updateDashboard();
+}
+
+// ============================================================================
+// DYNAMIC MASCOT INSIGHT SPEECH BUBBLE
+// ============================================================================
+function updateMascotInsight(d, yrIdx) {
+  const moodPill = document.getElementById('mascot-mood-pill');
+  const speechEl = document.getElementById('mascot-speech');
+
+  if (d.layak) {
+    moodPill.textContent = "LAYAK";
+    moodPill.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#DCFCE7] text-[#15803D]";
+  } else {
+    moodPill.textContent = "TIDAK LAYAK";
+    moodPill.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#FEE2E2] text-[#DC2626]";
+  }
+
+  let msg = "";
+  if (yrIdx !== null) {
+    const yr = 2027 + yrIdx;
+    if (yrIdx === 0) {
+      msg = `Tahun <strong>2027 (t=0)</strong> adalah fase investasi awal CAPEX sebesar <strong>${formatIDR(d.capex, true)}</strong> untuk 3 kiosk & aplikasi.`;
+    } else {
+      const fcfY = d.fcf[yrIdx];
+      const trxY = d.trx[yrIdx];
+      msg = `Pada tahun <strong>${yr} (t=${yrIdx})</strong> skenario <strong>${d.name}</strong>, tercatat <strong>${formatNum(Math.round(trxY))} trx</strong> dengan FCF <strong>${formatIDR(fcfY, true)}</strong>.`;
+    }
+  } else {
+    if (currentScenario === 'base') {
+      msg = `Pada <strong>Base Case</strong> (35,4 trx/hr), proyek meraih NPV <strong>Rp516,40 Jt</strong>, IRR <strong>89,16%</strong>, dan balik modal dalam <strong>1,17 tahun</strong>.`;
+    } else if (currentScenario === 'optimis') {
+      msg = `Pada skenario <strong>Optimis</strong>, kapasitas kiosk terpakai penuh (98,2 trx/hr) sehingga NPV melonjak ke <strong>Rp1,98 M</strong> (Payback <strong>4,1 bulan</strong>)!`;
+    } else {
+      msg = `Waspada! Pada skenario <strong>Pesimis</strong> (6,9 trx/hr), pendapatan gagal menutup OPEX tetap sehingga NPV defisit <strong>-Rp298,97 Jt</strong>.`;
+    }
+  }
+  speechEl.innerHTML = msg;
+}
+
+// ============================================================================
+// MAIN UPDATE PIPELINE
+// ============================================================================
+function updateDashboard() {
+  const d = MODEL_DATA.scenarios[currentScenario];
+  const yrIdx = currentYearFilter === 'all' ? null : (currentYearFilter - 2027);
+
+  // Update Navbar & Header Tags
+  document.getElementById('navbar-scen-badge').textContent = `${d.name} Case`;
+  document.getElementById('chart-cf-tag').textContent = `Skenario: ${d.name}`;
+  document.getElementById('table-cf-scenario').textContent = `Satuan: Rupiah Penuh (Rp) · ${d.name}`;
+
+  const verdictBox = document.getElementById('verdict-box');
+  const verdictText = document.getElementById('verdict-text');
+  if (d.layak) {
+    verdictBox.className = "px-4 py-2 rounded border border-[#1CC88A] bg-[#F0FDF4] text-right";
+    verdictBox.firstElementChild.className = "text-[10px] font-extrabold uppercase tracking-wider text-[#15803D]";
+    verdictText.className = "text-sm font-black text-[#15803D]";
+    verdictText.textContent = "LAYAK FINANSIAL";
+  } else {
+    verdictBox.className = "px-4 py-2 rounded border border-[#DC2626] bg-[#FEF2F2] text-right";
+    verdictBox.firstElementChild.className = "text-[10px] font-extrabold uppercase tracking-wider text-[#DC2626]";
+    verdictText.className = "text-sm font-black text-[#DC2626]";
+    verdictText.textContent = "TIDAK LAYAK";
+  }
+
+  // Update Mascot Speech Bubble
+  updateMascotInsight(d, yrIdx);
+
+  // Update 6 KPI Cards
+  document.getElementById('kpi-npv').textContent = formatIDR(d.npv, true);
+  document.getElementById('kpi-npv').className = `text-xl font-black my-1.5 ${d.npv >= 0 ? 'text-[#3A3B45]' : 'text-[#DC2626]'}`;
+  document.getElementById('kpi-npv-exact').textContent = formatIDR(d.npv, false);
+  const npvBadge = document.getElementById('kpi-npv-badge');
+  npvBadge.textContent = d.npv > 0 ? "> Rp0 (Layak)" : "< Rp0 (Defisit)";
+  npvBadge.className = `font-extrabold ${d.npv > 0 ? 'text-[#15803D]' : 'text-[#DC2626]'}`;
+
+  document.getElementById('kpi-irr').textContent = d.irr !== null ? `${(d.irr * 100).toFixed(2).replace('.', ',')}%` : "n/a";
+  document.getElementById('kpi-irr').className = `text-xl font-black my-1.5 ${d.irr !== null && d.irr > 0.12 ? 'text-[#3A3B45]' : 'text-[#DC2626]'}`;
+  const irrBadge = document.getElementById('kpi-irr-badge');
+  if (d.irr !== null && d.irr > 0.12) {
+    irrBadge.textContent = `+${((d.irr - 0.12) * 100).toFixed(1).replace('.', ',')}% spread`;
+    irrBadge.className = "font-extrabold text-[#15803D]";
+  } else {
+    irrBadge.textContent = "< 12,0%";
+    irrBadge.className = "font-extrabold text-[#DC2626]";
+  }
+
+  document.getElementById('kpi-bcr').textContent = `${d.bcr.toFixed(2).replace('.', ',')}x`;
+  document.getElementById('kpi-bcr').className = `text-xl font-black my-1.5 ${d.bcr > 1 ? 'text-[#3A3B45]' : 'text-[#DC2626]'}`;
+  const bcrBadge = document.getElementById('kpi-bcr-badge');
+  bcrBadge.textContent = d.bcr > 1 ? "Layak (>1x)" : "Rugi (<1x)";
+  bcrBadge.className = `font-extrabold ${d.bcr > 1 ? 'text-[#15803D]' : 'text-[#DC2626]'}`;
+
+  document.getElementById('kpi-payback').textContent = d.payback !== null ? `${d.payback.toFixed(2).replace('.', ',')} Tahun` : "> 5 Tahun";
+  document.getElementById('kpi-payback').className = `text-xl font-black my-1.5 ${d.payback !== null && d.payback <= 5 ? 'text-[#3A3B45]' : 'text-[#DC2626]'}`;
+  const pbBadge = document.getElementById('kpi-payback-badge');
+  if (d.payback !== null) {
+    pbBadge.textContent = `±${Math.round(d.payback * 12)} Bulan`;
+    pbBadge.className = "font-extrabold text-[#15803D]";
+  } else {
+    pbBadge.textContent = "Tidak Kembali";
+    pbBadge.className = "font-extrabold text-[#DC2626]";
+  }
+
+  document.getElementById('kpi-capex').textContent = formatIDR(d.capex, true);
+
+  // KPI 6 (Dynamic by Year Filter)
+  if (yrIdx === null) {
+    document.getElementById('kpi-trx-label').textContent = "Transaksi Tahun 1";
+    document.getElementById('kpi-trx').textContent = `${formatNum(Math.round(d.trx_real_y1))} trx`;
+    document.getElementById('kpi-trx-daily').textContent = `${formatNum(d.trx_daily_y1, 1)} trx/hari`;
+    const utilY1 = (d.trx_real_y1 / d.cap_trx) * 100;
+    document.getElementById('kpi-trx-util').textContent = `Util. ${utilY1.toFixed(1).replace('.', ',')}%`;
+  } else if (yrIdx === 0) {
+    document.getElementById('kpi-trx-label').textContent = "Transaksi 2027 (t=0)";
+    document.getElementById('kpi-trx').textContent = "0 trx";
+    document.getElementById('kpi-trx-daily').textContent = "Tahun Pengadaan";
+    document.getElementById('kpi-trx-util').textContent = "Fase CAPEX";
+  } else {
+    const trxY = d.trx[yrIdx];
+    const utilY = (trxY / d.cap_trx) * 100;
+    document.getElementById('kpi-trx-label').textContent = `Transaksi ${currentYearFilter} (t=${yrIdx})`;
+    document.getElementById('kpi-trx').textContent = `${formatNum(Math.round(trxY))} trx`;
+    document.getElementById('kpi-trx-daily').textContent = `${formatNum(trxY / 365, 1)} trx/hari`;
+    document.getElementById('kpi-trx-util').textContent = `Util. ${utilY.toFixed(1).replace('.', ',')}%`;
+  }
+
+  // Render Progress Bar Lists (RuangAdmin Products Sold Style)
+  renderCapexProgressList();
+  renderOpexProgressList(d, yrIdx);
+
+  // Render Charts
+  renderCashFlowComboChart(d, yrIdx);
+  renderScenarioCompareChart();
+  renderTornadoChart();
+
+  // Render Tables
+  renderCashFlowTable(d, yrIdx);
+  renderCriteriaTable(d);
+}
+
+// ============================================================================
+// PROGRESS BAR LIST RENDERERS (RuangAdmin 'Products Sold' Style)
+// ============================================================================
+function renderCapexProgressList() {
+  const totalCapex = 194008842.5;
+  const container = document.getElementById('capex-progress-list');
+
+  container.innerHTML = MODEL_DATA.capexGroups.map(item => {
+    const pct = (item.value / totalCapex) * 100;
+    return `
+      <div>
+        <div class="flex items-center justify-between text-xs mb-1">
+          <span class="font-bold text-[#3A3B45] truncate pr-2">${item.label}</span>
+          <span class="font-extrabold text-[#5A5C69] whitespace-nowrap">
+            ${formatIDR(item.value, true)} <span class="text-[#858796] font-semibold">(${pct.toFixed(1).replace('.', ',')}%)</span>
+          </span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: ${pct.toFixed(2)}%; background-color: ${item.color};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderOpexProgressList(d, yrIdx) {
+  let sliceRows = d.opex_breakdown_y;
+  let titleText = "Struktur OPEX (5 Tahun)";
+  let totalOpex = d.opex.reduce((a, b) => a + b, 0);
+  let avgText = `${formatIDR(totalOpex / 5, true)}/th`;
+
+  if (yrIdx !== null && yrIdx >= 1) {
+    sliceRows = [d.opex_breakdown_y[yrIdx - 1]];
+    titleText = `Struktur OPEX ${currentYearFilter} (t=${yrIdx})`;
+    totalOpex = d.opex[yrIdx];
+    avgText = `Tahun ${currentYearFilter}`;
+  } else if (yrIdx === 0) {
+    sliceRows = [];
+    titleText = "Struktur OPEX 2027 (t=0)";
+    totalOpex = 0;
+    avgText = "Belum Beroperasi";
+  }
+
+  document.getElementById('opex-card-title').textContent = titleText;
+  document.getElementById('opex-card-total').textContent = formatIDR(totalOpex, true);
+  document.getElementById('opex-card-avg').textContent = avgText;
+
+  const container = document.getElementById('opex-progress-list');
+  if (sliceRows.length === 0) {
+    container.innerHTML = `<div class="text-xs text-[#858796] py-8 text-center">Tidak ada biaya operasional pada tahun pengadaan 2027 (t=0).</div>`;
+    return;
+  }
+
+  const totFixed = sliceRows.reduce((s, r) => s + r.fixed_ops, 0);
+  const totVar = sliceRows.reduce((s, r) => s + r.var_ops, 0);
+  const totPromo = sliceRows.reduce((s, r) => s + r.promo_cost, 0);
+  const totMdr = sliceRows.reduce((s, r) => s + r.mdr_cost, 0);
+  const grand = totFixed + totVar + totPromo + totMdr;
+
+  const items = [
+    {
+      label: "OPEX Tetap (Security, App, Operator, Listrik Standby)",
+      value: totFixed,
+      color: "#1E3A8A"
+    },
+    {
+      label: "Biaya Promo (Sewa Pertama Gratis 1 Jam)",
+      value: totPromo,
+      color: "#DC2626"
+    },
+    {
+      label: "OPEX Variabel (e-KYC, Listrik Charge, Siklus Baterai)",
+      value: totVar,
+      color: "#2563EB"
+    },
+    {
+      label: "Fee Payment Gateway / PJP (0,3%)",
+      value: totMdr,
+      color: "#F59E0B"
+    }
+  ];
+
+  container.innerHTML = items.map(it => {
+    const pct = grand > 0 ? (it.value / grand) * 100 : 0;
+    return `
+      <div>
+        <div class="flex items-start justify-between text-xs mb-1.5 gap-2">
+          <span class="font-bold text-[#3A3B45] leading-snug">${it.label}</span>
+          <span class="font-extrabold text-[#5A5C69] whitespace-nowrap">
+            ${formatIDR(it.value, true)} <span class="text-[#858796] font-semibold">(${pct.toFixed(1).replace('.', ',')}%)</span>
+          </span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: ${pct.toFixed(2)}%; background-color: ${it.color};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================================
+// CHART RENDERERS (Caskuy Red-Blue-Gold Brand Palette)
+// ============================================================================
+function renderCashFlowComboChart(d, yrIdx) {
+  const ctx = document.getElementById('cashFlowComboChart').getContext('2d');
+  if (charts.combo) charts.combo.destroy();
+
+  const labels = ['2027 (t=0)', '2028 (t=1)', '2029 (t=2)', '2030 (t=3)', '2031 (t=4)', '2032 (t=5)'];
+  const revM = d.rev.map(v => +(v / 1e6).toFixed(2));
+  const opexM = d.opex.map(v => +(v / 1e6).toFixed(2));
+  const fcfM = d.fcf.map(v => +(v / 1e6).toFixed(2));
+  const kumM = d.kum_fcf.map(v => +(v / 1e6).toFixed(2));
+
+  const revColors = labels.map((_, i) => (yrIdx === null || yrIdx === i) ? '#1E3A8A' : 'rgba(30, 58, 138, 0.25)');
+  const opexColors = labels.map((_, i) => (yrIdx === null || yrIdx === i) ? '#DC2626' : 'rgba(220, 38, 38, 0.25)');
+  const fcfColors = labels.map((_, i) => (yrIdx === null || yrIdx === i) ? '#2563EB' : 'rgba(37, 99, 235, 0.25)');
+
+  charts.combo = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Pendapatan (Rp Jt)',
+          data: revM,
+          backgroundColor: revColors,
+          borderRadius: 3,
+          order: 2
+        },
+        {
+          label: 'OPEX (Rp Jt)',
+          data: opexM,
+          backgroundColor: opexColors,
+          borderRadius: 3,
+          order: 3
+        },
+        {
+          label: 'Free Cash Flow / FCF (Rp Jt)',
+          data: fcfM,
+          backgroundColor: fcfColors,
+          borderRadius: 3,
+          order: 4
+        },
+        {
+          label: 'FCF Kumulatif — Break-Even (Rp Jt)',
+          data: kumM,
+          type: 'line',
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245, 158, 11, 0.15)',
+          borderWidth: 3,
+          pointRadius: labels.map((_, i) => (yrIdx === i ? 7 : 4.5)),
+          pointBackgroundColor: kumM.map(v => v >= 0 ? '#1CC88A' : '#DC2626'),
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 2,
+          tension: 0.2,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11, weight: '700' } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: Rp${ctx.parsed.y.toLocaleString('id-ID', { minimumFractionDigits: 2 })} Jt`
+          }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: (c) => c.tick.value === 0 ? '#858796' : '#EAECF4', lineWidth: (c) => c.tick.value === 0 ? 1.5 : 1 },
+          ticks: {
+            font: { size: 11, weight: '600' },
+            callback: (val) => `Rp${val} Jt`
+          }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11, weight: '700' } }
+        }
+      }
+    }
+  });
+}
+
+function renderScenarioCompareChart() {
+  const ctx = document.getElementById('scenarioCompareChart').getContext('2d');
+  if (charts.scen) charts.scen.destroy();
+
+  const keys = ['pesimis', 'base', 'optimis'];
+  const labels = ['Pesimis', 'Base (Acuan)', 'Optimis'];
+  const npvVals = keys.map(k => +(MODEL_DATA.scenarios[k].npv / 1e6).toFixed(2));
+  const ebit5yVals = keys.map(k => +(MODEL_DATA.scenarios[k].ebit.reduce((a, b) => a + b, 0) / 1e6).toFixed(2));
+
+  charts.scen = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'NPV (Rp Juta)',
+          data: npvVals,
+          backgroundColor: keys.map(k => k === currentScenario ? '#1E3A8A' : 'rgba(30, 58, 138, 0.45)'),
+          borderRadius: 4
+        },
+        {
+          label: 'Total EBIT 5 Th (Rp Juta)',
+          data: ebit5yVals,
+          backgroundColor: keys.map(k => k === currentScenario ? '#DC2626' : 'rgba(220, 38, 38, 0.45)'),
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11, weight: '700' } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: Rp${ctx.parsed.y.toLocaleString('id-ID', { minimumFractionDigits: 2 })} Jt`
+          }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: (c) => c.tick.value === 0 ? '#858796' : '#EAECF4' },
+          ticks: { font: { size: 10, weight: '600' }, callback: (v) => `Rp${v} Jt` }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 11, weight: '700' } } }
+      }
+    }
+  });
+}
+
+function renderTornadoChart() {
+  const ctx = document.getElementById('tornadoChart').getContext('2d');
+  if (charts.tornado) charts.tornado.destroy();
+
+  const labels = MODEL_DATA.tornado.map(t => t.variable);
+  const downside = MODEL_DATA.tornado.map(t => t.delta_low);
+  const upside = MODEL_DATA.tornado.map(t => t.delta_high);
+
+  charts.tornado = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Downside (Δ NPV Rp Jt)',
+          data: downside,
+          backgroundColor: '#DC2626',
+          borderRadius: 3
+        },
+        {
+          label: 'Upside (Δ NPV Rp Jt)',
+          data: upside,
+          backgroundColor: '#2563EB',
+          borderRadius: 3
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10.5, weight: '700' } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.x;
+              const sign = v > 0 ? '+' : '';
+              return `${ctx.dataset.label}: ${sign}Rp${v.toFixed(2).replace('.', ',')} Jt`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: false,
+          grid: { color: (c) => c.tick.value === 0 ? '#5A5C69' : '#EAECF4', lineWidth: (c) => c.tick.value === 0 ? 1.5 : 1 },
+          ticks: { font: { size: 10, weight: '600' }, callback: (v) => `${v > 0 ? '+' : ''}${v}` }
+        },
+        y: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 10.5, weight: '700' } }
+        }
+      }
+    }
+  });
+}
+
+// ============================================================================
+// TABLE RENDERERS
+// ============================================================================
+function renderCashFlowTable(d, yrIdx) {
+  [2027, 2028, 2029, 2030, 2031, 2032].forEach(y => {
+    const th = document.getElementById(`th-${y}`);
+    if (currentYearFilter === y) {
+      th.className = "py-2.5 px-3 bg-[#EFF6FF] text-[#1E3A8A] font-black border-b-2 border-[#DC2626]";
+    } else {
+      th.className = "py-2.5 px-3";
+    }
+  });
+
+  const rows = [
+    {
+      label: "Transaksi Terealisasi (trx)",
+      vals: d.trx,
+      total: d.trx.reduce((a, b) => a + b, 0),
+      isCurrency: false,
+      bold: false
+    },
+    {
+      label: "Pendapatan Sewa Bruto",
+      vals: d.rev,
+      total: d.rev.reduce((a, b) => a + b, 0),
+      isCurrency: true,
+      bold: true,
+      color: "text-[#1E3A8A]"
+    },
+    {
+      label: "Total Biaya Operasional (OPEX)",
+      vals: d.opex.map(v => -v),
+      total: -d.opex.reduce((a, b) => a + b, 0),
+      isCurrency: true,
+      bold: false,
+      color: "text-[#DC2626]"
+    },
+    {
+      label: "Laba Operasi (EBIT)",
+      vals: d.ebit,
+      total: d.ebit.reduce((a, b) => a + b, 0),
+      isCurrency: true,
+      bold: true
+    },
+    {
+      label: "Investasi Awal (CAPEX)",
+      vals: [-d.capex, 0, 0, 0, 0, 0],
+      total: -d.capex,
+      isCurrency: true,
+      bold: false,
+      color: "text-[#DC2626]"
+    },
+    {
+      label: "Nilai Sisa Aset (Salvage 10%)",
+      vals: d.salvage,
+      total: d.salvage.reduce((a, b) => a + b, 0),
+      isCurrency: true,
+      bold: false,
+      color: "text-[#15803D]"
+    },
+    {
+      label: "Free Cash Flow (FCF)",
+      vals: d.fcf,
+      total: d.fcf.reduce((a, b) => a + b, 0),
+      isCurrency: true,
+      bold: true,
+      bg: "bg-[#EFF6FF]/60"
+    },
+    {
+      label: "FCF Kumulatif (Non-Diskonto)",
+      vals: d.kum_fcf,
+      total: d.kum_fcf[5],
+      isCurrency: true,
+      bold: true,
+      bg: "bg-[#FFFBEB]"
+    }
+  ];
+
+  const tbody = document.getElementById('cashflow-tbody');
+  tbody.innerHTML = rows.map(r => {
+    const cells = r.vals.map((v, i) => {
+      const highlight = (yrIdx === i) ? "bg-[#EFF6FF] font-extrabold text-[#1E3A8A]" : "";
+      const txtColor = v < 0 ? "text-[#DC2626]" : (r.color || "");
+      const formatted = r.isCurrency ? (v === 0 ? "Rp0" : formatIDR(v)) : formatNum(Math.round(v));
+      return `<td class="py-2 px-3 whitespace-nowrap ${highlight} ${txtColor}">${formatted}</td>`;
+    }).join('');
+
+    const totFormatted = r.isCurrency ? formatIDR(r.total) : formatNum(Math.round(r.total));
+    const totColor = r.total < 0 ? "text-[#DC2626]" : "text-[#1E3A8A]";
+
+    return `
+      <tr class="${r.bg || 'hover:bg-[#F8F9FC]'} ${r.bold ? 'font-bold' : ''}">
+        <td class="py-2 px-4 text-left whitespace-nowrap text-[#3A3B45]">${r.label}</td>
+        ${cells}
+        <td class="py-2 px-4 whitespace-nowrap bg-[#F8F9FC] font-extrabold ${totColor}">${totFormatted}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderCriteriaTable(d) {
+  const criteria = [
+    {
+      name: "1. Net Present Value (NPV)",
+      val: formatIDR(d.npv, true),
+      threshold: "> Rp0",
+      pass: d.npv > 0
+    },
+    {
+      name: "2. Internal Rate of Return",
+      val: d.irr !== null ? `${(d.irr * 100).toFixed(2).replace('.', ',')}%` : "n/a",
+      threshold: "> 12,0%",
+      pass: d.irr !== null && d.irr > 0.12
+    },
+    {
+      name: "3. Benefit-Cost Ratio",
+      val: `${d.bcr.toFixed(2).replace('.', ',')}x`,
+      threshold: "> 1,00x",
+      pass: d.bcr > 1
+    },
+    {
+      name: "4. Payback Period",
+      val: d.payback !== null ? `${d.payback.toFixed(2).replace('.', ',')} th` : "> 5 th",
+      threshold: "≤ 5,00 th",
+      pass: d.payback !== null && d.payback <= 5
+    }
+  ];
+
+  const tbody = document.getElementById('criteria-tbody');
+  tbody.innerHTML = criteria.map(c => `
+    <tr class="hover:bg-[#F8F9FC]">
+      <td class="py-2.5 px-3.5 font-bold text-[#3A3B45]">${c.name}</td>
+      <td class="py-2.5 px-3 text-right font-extrabold ${c.pass ? 'text-[#3A3B45]' : 'text-[#DC2626]'}">${c.val}</td>
+      <td class="py-2.5 px-3 text-[#858796] font-semibold">${c.threshold}</td>
+      <td class="py-2.5 px-3.5 text-center">
+        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold ${c.pass ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-[#FEE2E2] text-[#DC2626]'}">
+          ${c.pass ? 'LAYAK' : 'TIDAK'}
+        </span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+  updateDashboard();
+});
+</script>
+</body>
+</html>
